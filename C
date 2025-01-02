@@ -1,0 +1,601 @@
+/*This program provides a basic menu-driven interface for managing student data. It includes functionalities to:
+Add a new student.
+Display all students.
+Search for a student by ID.
+Exit the program*/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_STUDENTS 100
+#define NAME_LEN 50
+
+typedef struct {
+    int id;
+    char name[NAME_LEN];
+    float marks;
+} Student;
+
+Student students[MAX_STUDENTS];
+int student_count = 0;
+
+void addStudent() {
+    if (student_count >= MAX_STUDENTS) {
+        printf("\nError: Cannot add more students. Maximum limit reached.\n");
+        return;
+    }
+
+    Student new_student;
+    printf("\nEnter Student ID: ");
+    scanf("%d", &new_student.id);
+    printf("Enter Student Name: ");
+    getchar(); // To consume newline left by scanf
+    fgets(new_student.name, NAME_LEN, stdin);
+    new_student.name[strcspn(new_student.name, "\n")] = 0; // Remove newline
+    printf("Enter Marks: ");
+    scanf("%f", &new_student.marks);
+
+    students[student_count++] = new_student;
+    printf("\nStudent added successfully!\n");
+}
+
+void displayStudents() {
+    if (student_count == 0) {
+        printf("\nNo students to display.\n");
+        return;
+    }
+
+    printf("\n%-10s %-30s %-10s\n", "ID", "Name", "Marks");
+    printf("-----------------------------------------------\n");
+
+    for (int i = 0; i < student_count; i++) {
+        printf("%-10d %-30s %-10.2f\n", students[i].id, students[i].name, students[i].marks);
+    }
+}
+
+void searchStudentByID() {
+    if (student_count == 0) {
+        printf("\nNo students to search.\n");
+        return;
+    }
+
+    int id;
+    printf("\nEnter Student ID to search: ");
+    scanf("%d", &id);
+
+    for (int i = 0; i < student_count; i++) {
+        if (students[i].id == id) {
+            printf("\nStudent Found:\n");
+            printf("ID: %d\n", students[i].id);
+            printf("Name: %s\n", students[i].name);
+            printf("Marks: %.2f\n", students[i].marks);
+            return;
+        }
+    }
+
+    printf("\nStudent with ID %d not found.\n", id);
+}
+
+void menu() {
+    printf("\n================================\n");
+    printf("     Student Management System\n");
+    printf("================================\n");
+    printf("1. Add Student\n");
+    printf("2. Display Students\n");
+    printf("3. Search Student by ID\n");
+    printf("4. Exit\n");
+    printf("================================\n");
+}
+
+int main() {
+    int choice;
+
+    while (1) {
+        menu();
+        printf("\nEnter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                addStudent();
+                break;
+            case 2:
+                displayStudents();
+                break;
+            case 3:
+                searchStudentByID();
+                break;
+            case 4:
+                printf("\nExiting the program. Goodbye!\n");
+                exit(0);
+            default:
+                printf("\nInvalid choice. Please try again.\n");
+        }
+    }
+
+    return 0;
+}
+
+/*To write a program of approximately 250 lines, I'll extend the functionality of this student management system. The enhancements will include:
+Updating student records.
+Deleting student records.
+Saving and loading student data from a file.*/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_STUDENTS 100
+#define NAME_LEN 50
+
+typedef struct {
+    int id;
+    char name[NAME_LEN];
+    float marks;
+} Student;
+
+Student students[MAX_STUDENTS];
+int student_count = 0;
+
+void saveToFile() {
+    FILE *file = fopen("students.dat", "wb");
+    if (!file) {
+        printf("\nError: Could not save data to file.\n");
+        return;
+    }
+    fwrite(&student_count, sizeof(int), 1, file);
+    fwrite(students, sizeof(Student), student_count, file);
+    fclose(file);
+    printf("\nData saved successfully!\n");
+}
+
+void loadFromFile() {
+    FILE *file = fopen("students.dat", "rb");
+    if (!file) {
+        printf("\nNo saved data found. Starting fresh.\n");
+        return;
+    }
+    fread(&student_count, sizeof(int), 1, file);
+    fread(students, sizeof(Student), student_count, file);
+    fclose(file);
+    printf("\nData loaded successfully!\n");
+}
+
+void addStudent() {
+    if (student_count >= MAX_STUDENTS) {
+        printf("\nError: Cannot add more students. Maximum limit reached.\n");
+        return;
+    }
+
+    Student new_student;
+    printf("\nEnter Student ID: ");
+    scanf("%d", &new_student.id);
+    printf("Enter Student Name: ");
+    getchar(); // To consume newline left by scanf
+    fgets(new_student.name, NAME_LEN, stdin);
+    new_student.name[strcspn(new_student.name, "\n")] = 0; // Remove newline
+    printf("Enter Marks: ");
+    scanf("%f", &new_student.marks);
+
+    students[student_count++] = new_student;
+    printf("\nStudent added successfully!\n");
+}
+
+void displayStudents() {
+    if (student_count == 0) {
+        printf("\nNo students to display.\n");
+        return;
+    }
+
+    printf("\n%-10s %-30s %-10s\n", "ID", "Name", "Marks");
+    printf("-----------------------------------------------\n");
+
+    for (int i = 0; i < student_count; i++) {
+        printf("%-10d %-30s %-10.2f\n", students[i].id, students[i].name, students[i].marks);
+    }
+}
+
+void searchStudentByID() {
+    if (student_count == 0) {
+        printf("\nNo students to search.\n");
+        return;
+    }
+
+    int id;
+    printf("\nEnter Student ID to search: ");
+    scanf("%d", &id);
+
+    for (int i = 0; i < student_count; i++) {
+        if (students[i].id == id) {
+            printf("\nStudent Found:\n");
+            printf("ID: %d\n", students[i].id);
+            printf("Name: %s\n", students[i].name);
+            printf("Marks: %.2f\n", students[i].marks);
+            return;
+        }
+    }
+
+    printf("\nStudent with ID %d not found.\n", id);
+}
+
+void updateStudent() {
+    if (student_count == 0) {
+        printf("\nNo students to update.\n");
+        return;
+    }
+
+    int id;
+    printf("\nEnter Student ID to update: ");
+    scanf("%d", &id);
+
+    for (int i = 0; i < student_count; i++) {
+        if (students[i].id == id) {
+            printf("\nUpdating Student ID %d:\n", id);
+            printf("Enter New Name: ");
+            getchar(); // Consume newline
+            fgets(students[i].name, NAME_LEN, stdin);
+            students[i].name[strcspn(students[i].name, "\n")] = 0;
+            printf("Enter New Marks: ");
+            scanf("%f", &students[i].marks);
+            printf("\nStudent record updated successfully!\n");
+            return;
+        }
+    }
+
+    printf("\nStudent with ID %d not found.\n", id);
+}
+
+void deleteStudent() {
+    if (student_count == 0) {
+        printf("\nNo students to delete.\n");
+        return;
+    }
+
+    int id;
+    printf("\nEnter Student ID to delete: ");
+    scanf("%d", &id);
+
+    for (int i = 0; i < student_count; i++) {
+        if (students[i].id == id) {
+            for (int j = i; j < student_count - 1; j++) {
+                students[j] = students[j + 1];
+            }
+            student_count--;
+            printf("\nStudent with ID %d deleted successfully!\n", id);
+            return;
+        }
+    }
+
+    printf("\nStudent with ID %d not found.\n", id);
+}
+
+void menu() {
+    printf("\n================================\n");
+    printf("     Student Management System\n");
+    printf("================================\n");
+    printf("1. Add Student\n");
+    printf("2. Display Students\n");
+    printf("3. Search Student by ID\n");
+    printf("4. Update Student\n");
+    printf("5. Delete Student\n");
+    printf("6. Save Data\n");
+    printf("7. Load Data\n");
+    printf("8. Exit\n");
+    printf("================================\n");
+}
+
+int main() {
+    loadFromFile();
+    int choice;
+
+    while (1) {
+        menu();
+        printf("\nEnter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                addStudent();
+                break;
+            case 2:
+                displayStudents();
+                break;
+            case 3:
+                searchStudentByID();
+                break;
+            case 4:
+                updateStudent();
+                break;
+            case 5:
+                deleteStudent();
+                break;
+            case 6:
+                saveToFile();
+                break;
+            case 7:
+                loadFromFile();
+                break;
+            case 8:
+                printf("\nExiting the program. Goodbye!\n");
+                saveToFile();
+                exit(0);
+            default:
+                printf("\nInvalid choice. Please try again.\n");
+        }
+    }
+
+    return 0;
+}
+/*creating a Tic-Tac-Toe game in C*/
+
+#include <stdio.h>
+#include <stdlib.h>
+
+#define SIZE 3
+
+char board[SIZE][SIZE];
+
+void initializeBoard() {
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            board[i][j] = ' ';
+        }
+    }
+}
+
+void displayBoard() {
+    printf("\n");
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            printf(" %c ", board[i][j]);
+            if (j < SIZE - 1) printf("|");
+        }
+        printf("\n");
+        if (i < SIZE - 1) printf("---|---|---\n");
+    }
+    printf("\n");
+}
+
+int checkWin() {
+    for (int i = 0; i < SIZE; i++) {
+        // Check rows
+        if (board[i][0] == board[i][1] && board[i][1] == board[i][2] && board[i][0] != ' ') {
+            return 1;
+        }
+        // Check columns
+        if (board[0][i] == board[1][i] && board[1][i] == board[2][i] && board[0][i] != ' ') {
+            return 1;
+        }
+    }
+    // Check diagonals
+    if (board[0][0] == board[1][1] && board[1][1] == board[2][2] && board[0][0] != ' ') {
+        return 1;
+    }
+    if (board[0][2] == board[1][1] && board[1][1] == board[2][0] && board[0][2] != ' ') {
+        return 1;
+    }
+
+    return 0;
+}
+
+int isDraw() {
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            if (board[i][j] == ' ') {
+                return 0;
+            }
+        }
+    }
+    return 1;
+}
+
+void playGame() {
+    int row, col, currentPlayer = 1;
+    char symbol;
+
+    while (1) {
+        displayBoard();
+        symbol = (currentPlayer == 1) ? 'X' : 'O';
+        printf("Player %d (%c), enter row and column (1-3): ", currentPlayer, symbol);
+        scanf("%d %d", &row, &col);
+
+        if (row < 1 || row > 3 || col < 1 || col > 3 || board[row - 1][col - 1] != ' ') {
+            printf("Invalid move. Try again.\n");
+            continue;
+        }
+
+        board[row - 1][col - 1] = symbol;
+
+        if (checkWin()) {
+            displayBoard();
+            printf("Player %d (%c) wins!\n", currentPlayer, symbol);
+            break;
+        }
+
+        if (isDraw()) {
+            displayBoard();
+            printf("It's a draw!\n");
+            break;
+        }
+
+        currentPlayer = (currentPlayer == 1) ? 2 : 1;
+    }
+}
+
+int main() {
+    printf("Welcome to Tic-Tac-Toe!\n");
+    initializeBoard();
+    playGame();
+    return 0;
+}
+/*Bank Management System program in C
+Add new accounts.
+Display all accounts.
+Deposit money into an account.
+Withdraw money from an account.
+Check the balance of an account.*/
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_ACCOUNTS 100
+#define NAME_LEN 50
+
+typedef struct {
+    int account_number;
+    char name[NAME_LEN];
+    double balance;
+} Account;
+
+Account accounts[MAX_ACCOUNTS];
+int account_count = 0;
+
+void addAccount() {
+    if (account_count >= MAX_ACCOUNTS) {
+        printf("\nError: Cannot add more accounts. Maximum limit reached.\n");
+        return;
+    }
+
+    Account new_account;
+    printf("\nEnter Account Number: ");
+    scanf("%d", &new_account.account_number);
+    printf("Enter Account Holder Name: ");
+    getchar(); // Consume newline left by scanf
+    fgets(new_account.name, NAME_LEN, stdin);
+    new_account.name[strcspn(new_account.name, "\n")] = 0; // Remove newline
+    printf("Enter Initial Balance: ");
+    scanf("%lf", &new_account.balance);
+
+    accounts[account_count++] = new_account;
+    printf("\nAccount created successfully!\n");
+}
+
+void displayAccounts() {
+    if (account_count == 0) {
+        printf("\nNo accounts to display.\n");
+        return;
+    }
+
+    printf("\n%-15s %-30s %-15s\n", "Account Number", "Name", "Balance");
+    printf("-----------------------------------------------------------\n");
+
+    for (int i = 0; i < account_count; i++) {
+        printf("%-15d %-30s %-15.2lf\n", accounts[i].account_number, accounts[i].name, accounts[i].balance);
+    }
+}
+
+void deposit() {
+    int account_number;
+    double amount;
+
+    printf("\nEnter Account Number: ");
+    scanf("%d", &account_number);
+
+    for (int i = 0; i < account_count; i++) {
+        if (accounts[i].account_number == account_number) {
+            printf("\nEnter Amount to Deposit: ");
+            scanf("%lf", &amount);
+            if (amount <= 0) {
+                printf("\nError: Invalid deposit amount.\n");
+                return;
+            }
+            accounts[i].balance += amount;
+            printf("\nAmount deposited successfully! New Balance: %.2lf\n", accounts[i].balance);
+            return;
+        }
+    }
+
+    printf("\nError: Account not found.\n");
+}
+
+void withdraw() {
+    int account_number;
+    double amount;
+
+    printf("\nEnter Account Number: ");
+    scanf("%d", &account_number);
+
+    for (int i = 0; i < account_count; i++) {
+        if (accounts[i].account_number == account_number) {
+            printf("\nEnter Amount to Withdraw: ");
+            scanf("%lf", &amount);
+            if (amount <= 0 || amount > accounts[i].balance) {
+                printf("\nError: Invalid withdrawal amount.\n");
+                return;
+            }
+            accounts[i].balance -= amount;
+            printf("\nAmount withdrawn successfully! New Balance: %.2lf\n", accounts[i].balance);
+            return;
+        }
+    }
+
+    printf("\nError: Account not found.\n");
+}
+
+void checkBalance() {
+    int account_number;
+
+    printf("\nEnter Account Number: ");
+    scanf("%d", &account_number);
+
+    for (int i = 0; i < account_count; i++) {
+        if (accounts[i].account_number == account_number) {
+            printf("\nAccount Holder: %s\n", accounts[i].name);
+            printf("Balance: %.2lf\n", accounts[i].balance);
+            return;
+        }
+    }
+
+    printf("\nError: Account not found.\n");
+}
+
+void menu() {
+    printf("\n====================================\n");
+    printf("       Bank Management System       \n");
+    printf("====================================\n");
+    printf("1. Add Account\n");
+    printf("2. Display Accounts\n");
+    printf("3. Deposit Money\n");
+    printf("4. Withdraw Money\n");
+    printf("5. Check Balance\n");
+    printf("6. Exit\n");
+    printf("====================================\n");
+}
+
+int main() {
+    int choice;
+
+    while (1) {
+        menu();
+        printf("\nEnter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                addAccount();
+                break;
+            case 2:
+                displayAccounts();
+                break;
+            case 3:
+                deposit();
+                break;
+            case 4:
+                withdraw();
+                break;
+            case 5:
+                checkBalance();
+                break;
+            case 6:
+                printf("\nExiting the program. Goodbye!\n");
+                exit(0);
+            default:
+                printf("\nInvalid choice. Please try again.\n");
+        }
+    }
+
+    return 0;
+}
